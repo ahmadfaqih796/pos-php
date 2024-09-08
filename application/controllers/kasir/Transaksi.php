@@ -35,6 +35,7 @@ class Transaksi extends MY_Controller
             'Nomor_Invoice'     => $this->generateNomorInvoice(),
             'Created_By'        => $this->userId,
             'Period_Month'      => $this->bulanBahasa(date('n')),
+            'Is_Paid'           => 2,
             'Period_Year'       => date('Y')
         ];
 
@@ -242,7 +243,7 @@ class Transaksi extends MY_Controller
                 ];
 
                 $this->db->update('tbl_transaksi', $dataUpdate, ['ID_Transaksi' => $id]);
-                $this->session->set_flashdata('msg', 'Pemabayaran Berhasil!');
+                $this->session->set_flashdata('msg', 'Pembayaran Berhasil!');
                 redirect('kasir/transaksi/');
             }
         }
@@ -287,8 +288,12 @@ class Transaksi extends MY_Controller
         $data = array();
         $no   = $_POST['start'];
         foreach ($list as $field) {
-            $is_paid = ($field->Is_Paid == 0) ? '<p class="badge badge-danger">Belum Bayar</p>' : '<p class="badge badge-success">Sudah Bayar</p>';
-            $is_paid2 = ($field->Is_Paid == 0) ? "<a href='" . site_url('kasir/transaksi/inputBelanja/' . $field->ID_Transaksi) . "' class='btn btn-warning btn-icon'><i class='fa fa-pen'></i></a>" : "<a href='" . site_url('kasir/transaksi/cetakTransaksi/' . $field->ID_Transaksi) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
+            // $is_paid = ($field->Paid_Type == null) ? '<p class="badge badge-warning">Menunggu Konfirmasi</p>' : ($field->Is_Paid == 0) ? '<p class="badge badge-danger">Belum Bayar</p>' : '<p class="badge badge-success">Sudah Bayar</p>';
+            $is_paid = $this->getPaymentStatus($field->Is_Paid);
+            // $is_paid2 = ($field->Is_Paid == 0 || $field->Is_Paid == 2) ? "<a href='" . site_url('kasir/transaksi/inputBelanja/' . $field->ID_Transaksi) . "' class='btn btn-warning btn-icon'><i class='fa fa-pen'></i></a>" : "<a href='" . site_url('kasir/transaksi/cetakTransaksi/' . $field->ID_Transaksi) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
+            $is_paid2 = ($field->Is_Paid == 0 || $field->Is_Paid == 2)
+                ? "<a href='#' class='btn btn-warning btn-icon' data-toggle='modal' data-target='#confirmModal' data-id='" . $field->ID_Transaksi . "'><i class='fa fa-pen'></i></a>"
+                : "<a href='" . site_url('kasir/transaksi/cetakTransaksi/' . $field->ID_Transaksi) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
             $no++;
             $row = array();
 
@@ -307,6 +312,26 @@ class Transaksi extends MY_Controller
             "data" => $data,
         );
         echo json_encode($output);
+    }
+
+    private function getPaymentStatus($isPaid)
+    {
+        if ($isPaid == 2) {
+            return '';
+        } elseif ($isPaid == 1) {
+            return '<p class="badge badge-success">Sudah Bayar</p>';
+        } else {
+            return '<p class="badge badge-danger">Belum Bayar</p>';
+        }
+    }
+
+    public function deleteTransaction($id)
+    {
+        // return print_r($id);
+        $this->db->where('ID_Transaksi', $id)->delete('tbl_penjualan');
+        $this->db->where('ID_Transaksi', $id)->update('tbl_transaksi', ['Is_Deleted' => 1]);
+        $this->session->set_flashdata('msg', 'Berhasil menghapus transaksi!');
+        redirect('kasir/transaksi');
     }
 
 

@@ -44,8 +44,57 @@
     </div>
 </div>
 
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Konfirmasi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Apakah Anda akan tetap melanjutkan transaksi ini?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="confirmNoButton" data-dismiss="modal">Tidak</button>
+                <button type="button" class="btn btn-primary" id="confirmYesButton">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
     $(document).ready(function() {
+
+        var transactionId;
+
+        $('#confirmModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            transactionId = button.data('id'); // Extract info from data-* attributes
+        });
+
+        $('#confirmYesButton').click(function() {
+            window.location.href = '<?php echo site_url('kasir/transaksi/inputBelanja/'); ?>' + transactionId;
+        });
+
+        $('#confirmNoButton').click(function() {
+            $('#confirmModal').modal('hide');
+            window.location.href = '<?php echo site_url('kasir/transaksi/deleteTransaction/'); ?>' + transactionId;
+            // $.ajax({
+            //     url: '<?php echo site_url('kasir/transaksi/deleteTransaction'); ?>', // URL untuk delete
+            //     type: 'POST',
+            //     data: {
+            //         id: transactionId
+            //     },
+            //     success: function(response) {
+            //         // Redirect to inputBelanja
+            //         window.location.href = '<?php echo site_url('kasir/transaksi/inputBelanja/'); ?>' + transactionId;
+            //     }
+            // });
+        });
+
         var table;
         table = $('#table').DataTable({
             initComplete: function() {

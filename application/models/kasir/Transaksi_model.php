@@ -84,14 +84,14 @@ class Transaksi_model extends CI_Model
         $this->queryTransaksiDtTb();
         if ($_POST['length'] != -1)
             $this->db->limit($_POST['length'], $_POST['start']);
-        $query = $this->db->get();
+        $query = $this->db->where('Is_Deleted', 0)->get();
         return $query->result();
     }
 
     function countDataTransaksi()
     {
         $this->queryTransaksiDtTb();
-        $query = $this->db->get();
+        $query = $this->db->where('Is_Deleted', 0)->get();
         return $query->num_rows();
     }
 }
