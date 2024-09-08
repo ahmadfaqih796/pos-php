@@ -55,6 +55,11 @@
             </div>
 
             <div class="form-group">
+               <label for="">Harga Produk : <code>*</code></label>
+               <input type="text" name="harga_produk" id="harga_produk" class="form-control" value="<?= set_value('harga_produk') ?>" autocomplete="off" readonly>
+            </div>
+
+            <div class="form-group">
                <label for="">Harga : <code>*</code></label>
                <input type="number" name="h_product" id="h_product" class="form-control" value="<?= set_value('h_product') ?>" autocomplete="off">
                <?= form_error('h_product', '<small class="text-danger">', '</small>') ?>
@@ -99,6 +104,35 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    $(document).ready(function() {
+
+      $('#product_name').change(function() {
+         var product_name = $(this).val();
+         if (product_name != '') {
+            $.ajax({
+               url: "<?= site_url('master/transaksi_suplier/getProductDetail') ?>",
+               method: "POST",
+               data: {
+                  product_name: product_name
+               },
+               dataType: "json",
+               success: function(data) {
+                  if (data.status == 'success') {
+                     $('#harga_produk').val(data.data.price);
+                     calculateTotal();
+                  } else {
+                     $('#harga_produk').val('');
+                  }
+               },
+               error: function(jqXHR, textStatus, errorThrown) {
+                  console.log("error jqXHR : ", jqXHR)
+                  console.log("error textStatus : ", textStatus)
+                  console.log("error errorThrown : ", errorThrown)
+               }
+            });
+         } else {
+            $('#h_product').val('');
+         }
+      });
 
 
 
