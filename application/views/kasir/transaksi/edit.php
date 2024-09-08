@@ -168,9 +168,14 @@ $no = 1;
                         </div>
                     </div>
 
-                    <div id="paidTunai">
+                    <div id="paidTunai" class="form-group">
                         <label for="">Bayar : </label>
-                        <input type="text" name="Paid" class="form-control">
+                        <input type="text" name="Paid" id="paidInput" class="form-control" oninput="updateKembalian()">
+                    </div>
+
+                    <div id="paidKembalian" class="form-group">
+                        <label for="">Kembalian : </label>
+                        <input type="text" name="Kembalian" id="kembalian" class="form-control" readonly>
                     </div>
 
                     <button class="btn btn-primary btn-block">Bayar <i class="fa fa-dollar"></i></button>
@@ -189,6 +194,27 @@ $no = 1;
 <script>
     function reload_page() {
         window.location.reload();
+    }
+
+    function updateKembalian() {
+        var totalBelanja = parseFloat(document.querySelector('input[name="Bill"]').value.replace(/\./g, '').replace('Rp', ''));
+        var bayar = parseFloat(document.getElementById('paidInput').value.replace(/\./g, '').replace('Rp', '')) || 0;
+
+        // Hitung kembalian
+        var kembalian = bayar - totalBelanja;
+
+        // Format kembalian ke format Rupiah
+        var formattedKembalian = formatRupiah(kembalian.toString());
+
+        // Update nilai kembalian
+        document.getElementById('kembalian').value = formattedKembalian;
+    }
+
+    function formatRupiah(angka) {
+        var reverse = angka.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+        ribuan = ribuan.join('.').split('').reverse().join('');
+        return 'Rp. ' + ribuan;
     }
 
     function cariDetailBarang(id, barcode_id) {
@@ -273,7 +299,7 @@ $no = 1;
                     alert('Gagal!');
                     reload_page();
                 } else {
-                    alert('Berhasil');
+                    // alert('Berhasil');
                     reload_page();
                 }
             }
@@ -285,6 +311,7 @@ $no = 1;
     $(document).ready(function() {
         $("#paidTransfer").hide();
         $("#paidTunai").hide();
+        $("#paidKembalian").hide();
     });
     var scale = 1;
 
@@ -321,12 +348,15 @@ $no = 1;
         if (type == "Transfer") {
             $("#paidTransfer").show();
             $("#paidTunai").hide();
+            $("#paidKembalian").hide();
         } else if (type == "Tunai") {
             $("#paidTransfer").hide();
             $("#paidTunai").show();
+            $("#paidKembalian").show();
         } else {
             $("#paidTransfer").hide();
             $("#paidTunai").hide();
+            $("#paidKembalian").hide();
         }
     }
 
