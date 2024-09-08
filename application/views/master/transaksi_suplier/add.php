@@ -38,7 +38,7 @@
                   <option value="">-- Pilih --</option>
                   <?php
                   foreach ($suplier as $key => $value) { ?>
-                     <option value="<?= $value->name ?>"><?= $value->name . " - " . $value->name_company . " - " . $value->jenis_supplier ?></option>
+                     <option value="<?= $value->name ?>"><?= $value->name . " - " . $value->name_company ?></option>
                   <?php } ?>
                </select>
             </div>
