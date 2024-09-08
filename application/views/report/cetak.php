@@ -1,16 +1,14 @@
 <title>Laporan Transaksi (<?= $q1->Nomor_Invoice ?>)</title>
 <h2 align="center">Detail Laporan Transaksi (<?= $q1->Nomor_Invoice ?>)</h2>
-
+<!-- <?= print_r($q1) ?> -->
 <h3 align="center">Toko Satria Nugget</h3>
 <h4 align="center"> Jl Klambir V Ruko Janetti No 4, Medan</h4>
 <h4 align="center">No Telp/Wa. 082168852450</h4>
 
 <h4 align="center">__________________________________________</h4>
 <h4 align="center">Tanggal : <?= $q1->Created_Date ?></h4>
-<!-- <h4 align="center">Kasir: <?= $q1->Created_Date ?></h4> -->
-<h4 align="center">Kasir: Rusmin</h4>
-<h4 align="center">Tranksasi : Cash</h4>
-<!-- <h4 align="center">Supplier: <?= $q1->n_suplier ?></h4> -->
+<h4 align="center">Kasir: <?= $q1->name ?></h4>
+<h4 align="center">Tranksasi : <?= $q1->Paid_Type ?></h4>
 <h4 align="center">__________________________________________</h4>
 
 <script>
@@ -39,5 +37,13 @@
     <tr>
         <td colspan="4" align="right">Sub Total</td>
         <td>Rp. <?= number_format($q1->Bill, 0, '.', '.') ?></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="right">Bayar</td>
+        <td>Rp. <?= number_format($q1->Paid, 0, '.', '.') ?></td>
+    </tr>
+    <tr>
+        <td colspan="4" align="right">Kembalian</td>
+        <td>Rp. <?= number_format($q1->Paid - $q1->Bill, 0, '.', '.') ?></td>
     </tr>
 </table>
