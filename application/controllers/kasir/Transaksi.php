@@ -273,7 +273,11 @@ class Transaksi extends MY_Controller
             redirect('');
         }
 
-        $data['q1'] = $this->db->select('*')->from('tbl_transaksi')->where('ID_Transaksi', $id)->get()->row();
+        $data['q1'] = $this->db->select('*')
+            ->from('tbl_transaksi')
+            ->where('ID_Transaksi', $id)
+            ->join('users', 'users.id = tbl_transaksi.Created_By', 'left')
+            ->get()->row();
         $data['q2'] = $this->db->get_where('tbl_penjualan', ['ID_Transaksi' => $id]);
         $this->load->view('kasir/transaksi/cetak', $data);
     }

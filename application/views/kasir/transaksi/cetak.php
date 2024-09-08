@@ -7,10 +7,9 @@
 <h4 align="center">No Telp/Wa. 082168852450</h4>
 
 <h4 align="center">__________________________________________</h4>
-<!-- <h4 align="center">Tanggal : <?= $q1->created_at ?></h4>
-<h4 align="center">Kasir: Owner</h4>
-<h4 align="center">Tranksasi : Cash</h4>
-<h4 align="center">Supplier: <?= $q1->n_suplier ?></h4> -->
+<h4 align="center">Tanggal : <?= $q1->Created_Date ?></h4>
+<h4 align="center">Kasir: <?= $q1->name ?></h4>
+<h4 align="center">Tranksasi : <?= $q1->Paid_Type ?></h4>
 <h4 align="center">__________________________________________</h4>
 
 <script>
