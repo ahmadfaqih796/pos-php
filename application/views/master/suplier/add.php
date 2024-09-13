@@ -49,6 +49,11 @@
                     <?= form_error('jenis_supplier', '<small class="text-danger">', '</small>') ?>
                 </div>
 
+                <div class="form-group">
+                    <label for="">Harga Supplier : <code>*</code></label>
+                    <input type="text" name="harga_supplier" id="harga_supplier" class="form-control" value="<?= set_value('harga_supplier') ?>" autocomplete="off">
+                    <?= form_error('harga_supplier', '<small class="text-danger">', '</small>') ?>
+                </div>
 
                 <div class="form-group">
                     <label for="">Alamat : <code>*</code></label>

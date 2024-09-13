@@ -32,6 +32,7 @@
                                 <th>Nama Perusahaan</th>
                                 <th>Nama Supplier</th>
                                 <th>Jenis Supplier</th>
+                                <th>Harga Supplier</th>
                                 <th>No Hp</th>
                                 <th>Alamat</th>
                                 <!-- <th>Kota</th>

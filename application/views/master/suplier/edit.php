@@ -2,6 +2,7 @@
 $name        = $rowSuplier->name;
 $name_company    = $rowSuplier->name_company;
 $jenis_supplier  = $rowSuplier->jenis_supplier;
+$harga_supplier  = $rowSuplier->harga_supplier;
 $address     = $rowSuplier->address;
 $city        = $rowSuplier->city;
 $province    = $rowSuplier->province;
@@ -56,6 +57,12 @@ $phone_number    = $rowSuplier->phone_number;
                     <label for="">Jenis Supplier : <code>*</code></label>
                     <input type="text" name="jenis_supplier" id="jenis_supplier" class="form-control" value="<?= $jenis_supplier ?>" autocomplete="off">
                     <?= form_error('jenis_supplier', '<small class="text-danger">', '</small>') ?>
+                </div>
+
+                <div class="form-group">
+                    <label for="">Harga Supplier : <code>*</code></label>
+                    <input type="text" name="harga_supplier" id="harga_supplier" class="form-control" value="<?= $harga_supplier ?>" autocomplete="off">
+                    <?= form_error('harga_supplier', '<small class="text-danger">', '</small>') ?>
                 </div>
 
                 <div class="form-group">

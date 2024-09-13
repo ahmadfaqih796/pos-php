@@ -43,6 +43,7 @@ class Suplier extends MY_Controller
                 $name           = trim(htmlspecialchars($this->input->post('name')));
                 $name_company   = trim(htmlspecialchars($this->input->post('name_company')));
                 $jenis_supplier   = trim(htmlspecialchars($this->input->post('jenis_supplier')));
+                $harga_supplier   = trim(htmlspecialchars($this->input->post('harga_supplier')));
                 $address        = trim(htmlspecialchars($this->input->post('address')));
                 $city           = trim(htmlspecialchars($this->input->post('city')));
                 $province       = trim(htmlspecialchars($this->input->post('province')));
@@ -52,6 +53,7 @@ class Suplier extends MY_Controller
                     'name'          => $name,
                     'name_company'  => $name_company,
                     'jenis_supplier' => $jenis_supplier,
+                    'harga_supplier' => $harga_supplier,
                     'address'       => $address,
                     'city'          => $city,
                     'province'      => $province,
@@ -89,6 +91,7 @@ class Suplier extends MY_Controller
                 $name     = trim(htmlspecialchars($this->input->post('name')));
                 $name_company   = trim(htmlspecialchars($this->input->post('name_company')));
                 $jenis_supplier   = trim(htmlspecialchars($this->input->post('jenis_supplier')));
+                $harga_supplier   = trim(htmlspecialchars($this->input->post('harga_supplier')));
                 $address  = trim(htmlspecialchars($this->input->post('address')));
                 $city     = trim(htmlspecialchars($this->input->post('city')));
                 $province = trim(htmlspecialchars($this->input->post('province')));
@@ -98,6 +101,7 @@ class Suplier extends MY_Controller
                     'name'          => $name,
                     'name_company'  => $name_company,
                     'jenis_supplier' => $jenis_supplier,
+                    'harga_supplier' => $harga_supplier,
                     'address'       => $address,
                     'city'          => $city,
                     'province'      => $province,
@@ -149,6 +153,7 @@ class Suplier extends MY_Controller
             $row[] = $field->name_company;
             $row[] = $field->name;
             $row[] = $field->jenis_supplier;
+            $row[] = $field->harga_supplier;
             $row[] = $field->phone_number;
             $row[] = $field->address;
             // $row[] = $field->city;
