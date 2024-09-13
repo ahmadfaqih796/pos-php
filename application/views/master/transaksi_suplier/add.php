@@ -43,7 +43,7 @@
                </select>
             </div>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                <label for="">Nama Produk : <code>*</code></label>
                <select name="product_name" id="product_name" class="form-control" required>
                   <option value="">-- Pilih --</option>
@@ -52,16 +52,21 @@
                      <option value="<?= $value->product_name ?>"><?= $value->product_name ?></option>
                   <?php } ?>
                </select>
+            </div> -->
+
+            <div class="form-group">
+               <label for="">Jenis Produk : <code>*</code></label>
+               <input type="text" name="jenis_produk" id="jenis_produk" class="form-control" value="<?= set_value('jenis_produk') ?>" autocomplete="off" readonly>
             </div>
+
+            <!-- <div class="form-group">
+               <label for="">Harga Produk : <code>*</code></label>
+               <input type="text" name="harga_produk" id="harga_produk" class="form-control" value="<?= set_value('harga_produk') ?>" autocomplete="off" readonly>
+            </div> -->
 
             <div class="form-group">
                <label for="">Harga Produk : <code>*</code></label>
-               <input type="text" name="harga_produk" id="harga_produk" class="form-control" value="<?= set_value('harga_produk') ?>" autocomplete="off" readonly>
-            </div>
-
-            <div class="form-group">
-               <label for="">Harga : <code>*</code></label>
-               <input type="number" name="h_product" id="h_product" class="form-control" value="<?= set_value('h_product') ?>" autocomplete="off">
+               <input type="number" name="h_product" id="h_product" class="form-control" value="<?= set_value('h_product') ?>" autocomplete="off" readonly>
                <?= form_error('h_product', '<small class="text-danger">', '</small>') ?>
             </div>
 
@@ -104,6 +109,37 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    $(document).ready(function() {
+
+      $('#n_suplier').change(function() {
+         var n_suplier = $(this).val();
+         if (n_suplier != '') {
+            $.ajax({
+               url: "<?= site_url('master/transaksi_suplier/getSupplierDetail') ?>",
+               method: "POST",
+               data: {
+                  n_suplier: n_suplier
+               },
+               dataType: "json",
+               success: function(data) {
+                  if (data.status == 'success') {
+                     // console.log("sssssssss", data)
+                     $('#jenis_produk').val(data.data.jenis_supplier);
+                     $('#h_product').val(data.data.harga_supplier);
+                     // calculateTotal();
+                  } else {
+                     // $('#harga_produk').val('');
+                  }
+               },
+               error: function(jqXHR, textStatus, errorThrown) {
+                  console.log("error jqXHR : ", jqXHR)
+                  console.log("error textStatus : ", textStatus)
+                  console.log("error errorThrown : ", errorThrown)
+               }
+            });
+         } else {
+            $('#h_product').val('');
+         }
+      });
 
       $('#product_name').change(function() {
          var product_name = $(this).val();

@@ -53,7 +53,7 @@ class Transaksi_Suplier extends MY_Controller
 
          $this->template->load('template', 'master/Transaksi_suplier/add', $data);
       } else {
-         $product_name           = trim(htmlspecialchars($this->input->post('product_name')));
+         $product_name           = trim(htmlspecialchars($this->input->post('jenis_produk')));
          $n_suplier   = trim(htmlspecialchars($this->input->post('n_suplier')));
          $h_product        = trim(htmlspecialchars($this->input->post('h_product')));
          $qty           = trim(htmlspecialchars($this->input->post('qty')));
@@ -200,6 +200,18 @@ class Transaksi_Suplier extends MY_Controller
 
       if ($product) {
          echo json_encode(['status' => 'success', 'data' => $product]);
+      } else {
+         echo json_encode(['status' => 'error']);
+      }
+   }
+
+   public function getSupplierDetail()
+   {
+      $n_suplier = trim(htmlspecialchars($this->input->post('n_suplier')));
+      $result = $this->sm->getData('supliers', ['name' => $n_suplier])->row();
+
+      if ($result) {
+         echo json_encode(['status' => 'success', 'data' => $result]);
       } else {
          echo json_encode(['status' => 'error']);
       }
