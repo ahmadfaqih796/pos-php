@@ -57,8 +57,18 @@
                      ?>
                   </tbody>
                   <tfoot>
-                     <th colspan="5">Total</th>
-                     <th><?= $total ?></th>
+                     <tr>
+                        <th colspan="5">Sub Total</th>
+                        <th><?= $total ?></th>
+                     </tr>
+                     <tr>
+                        <th colspan="5">Bayar</th>
+                        <th><?= $transaksi->bayar ?></th>
+                     </tr>
+                     <tr>
+                        <th colspan="5">Kembalian</th>
+                        <th><?= $transaksi->kembalian ?></th>
+                     </tr>
                   </tfoot>
                </table>
             </div>

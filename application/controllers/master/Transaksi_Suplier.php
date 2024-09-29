@@ -30,22 +30,24 @@ class Transaksi_Suplier extends MY_Controller
    public function viewTransaksi_Suplier($transaksi_id = null)
    {
       $product_supliers = $this->sm->getData('tr_product_supliers', ['transaksi_id' => $transaksi_id])->result();
+      $transaksi_supliers = $this->sm->getData('tr_new_supliers', ['id_transaksi' => $transaksi_id])->row();
       if ($this->auth() == false) {
          redirect('');
       }
       $data = [
          'title' => 'Master View Transaksi Suplier',
-         'product' => $product_supliers
+         'product' => $product_supliers,
+         'transaksi' => $transaksi_supliers
       ];
       $this->template->load('template', 'master/transaksi_suplier/view', $data);
    }
 
-   function cetakTransaksi($id)
+   function cetakTransaksi($id_transaksi = null)
    {
       if ($this->auth() == false) {
          redirect('');
       }
-      $data['q1'] = $this->db->get_where('tr_supliers', ['id' => $id])->row();
+      $data['q1'] = $this->db->get_where('tr_supliers', ['id' => $id_transaksi])->row();
       $this->load->view('master/transaksi_suplier/cetak', $data);
    }
 
@@ -117,6 +119,8 @@ class Transaksi_Suplier extends MY_Controller
       } else {
          $suplier_id  = trim(htmlspecialchars($this->input->post('suplier_id')));
          $t_harga     = trim(htmlspecialchars($this->input->post('t_harga')));
+         $bayar       = trim(htmlspecialchars($this->input->post('bayar')));
+         $kembalian   = trim(htmlspecialchars($this->input->post('kembalian')));
 
          $transaksi_id = $this->generate_id_transaksi();
 
@@ -155,7 +159,9 @@ class Transaksi_Suplier extends MY_Controller
          $this->sm->insert('tr_new_supliers', [
             'id_transaksi' => $transaksi_id,
             'suplier_id'   => $suplier_id,
-            'total'        => $t_harga
+            'total'        => $t_harga,
+            'bayar'        => $bayar,
+            'kembalian'    => $kembalian
          ]);
 
          $this->session->set_flashdata('msg', 'Transaksi berhasil ditambahkan!');
@@ -255,7 +261,7 @@ class Transaksi_Suplier extends MY_Controller
          $row[] = $field->nama_supplier;
          $row[] = $field->id_transaksi;
          $row[] = $field->total;
-         $row[] = "<a href='" . site_url('master/transaksi_suplier/viewTransaksi_Suplier/' . $field->id_transaksi) . "' class='btn btn-primary btn-icon'><i class='fa fa-eye'></i></a> <a href='" . site_url('master/transaksi_suplier/cetakTransaksi/' . $field->id) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
+         $row[] = "<a href='" . site_url('master/transaksi_suplier/viewTransaksi_Suplier/' . $field->id_transaksi) . "' class='btn btn-primary btn-icon'><i class='fa fa-eye'></i></a> <a href='" . site_url('master/transaksi_suplier/cetakTransaksi/' . $field->id_transaksi) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
 
          $data[] = $row;
       }
