@@ -36,53 +36,114 @@ class Transaksi_Suplier extends MY_Controller
       $this->load->view('master/transaksi_suplier/cetak', $data);
    }
 
+   // public function tambahTransaksi_Suplier()
+   // {
+   //    if ($this->auth() == false) {
+   //       redirect('');
+   //    }
+   //    $this->validationTransaksi_Suplier();
+   //    $data_suplier = $this->sm->getDataAll('supliers')->result();
+   //    $data_product = $this->sm->getDataAll('product_supliers')->result();
+   //    if ($this->form_validation->run() == FALSE) {
+   //       $data = [
+   //          'title' => 'Menu Tambah Transaksi Suplier',
+   //          'suplier' => $data_suplier,
+   //          'product' => $data_product
+   //       ];
+
+   //       $this->template->load('template', 'master/Transaksi_suplier/add', $data);
+   //    } else {
+   //       $product_name           = trim(htmlspecialchars($this->input->post('product_name')));
+   //       $n_suplier   = trim(htmlspecialchars($this->input->post('n_suplier')));
+   //       $h_product        = trim(htmlspecialchars($this->input->post('h_product')));
+   //       $qty           = trim(htmlspecialchars($this->input->post('qty')));
+   //       $t_harga       = trim(htmlspecialchars($this->input->post('t_harga')));
+   //       $bayar         = trim(htmlspecialchars($this->input->post('bayar')));
+   //       $kembalian     = trim(htmlspecialchars($this->input->post('kembalian')));
+
+   //       $dataInsert = [
+   //          'id_transaksi'  => $this->generate_id_transaksi(),
+   //          'n_barang'  => $product_name,
+   //          'n_suplier'    => $n_suplier,
+   //          'harga'    => $h_product,
+   //          'qty'          => $qty,
+   //          'total'      => $t_harga,
+   //          'bayar'      => $bayar,
+   //          'kembalian'    => $kembalian,
+   //          'created_by'    => $this->userId
+   //       ];
+
+   //       $getProduct = $this->pm->getData('product', ['product_name' => $product_name])->row();
+   //       $dataUpdate = [
+   //          'stock' => $getProduct->stock + $qty
+   //       ];
+
+   //       $this->sm->insert('tr_supliers', $dataInsert);
+   //       $this->pm->update('product', $dataUpdate, ['id' => $getProduct->id]);
+
+   //       $this->session->set_flashdata('msg', 'Berhasil menambahkan Transaksi Suplier!');
+   //       redirect('master/Transaksi_suplier');
+   //    }
+   // }
+
    public function tambahTransaksi_Suplier()
    {
       if ($this->auth() == false) {
          redirect('');
       }
+
       $this->validationTransaksi_Suplier();
-      $data_suplier = $this->sm->getDataAll('supliers')->result();
-      $data_product = $this->sm->getDataAll('product')->result();
+
       if ($this->form_validation->run() == FALSE) {
          $data = [
             'title' => 'Menu Tambah Transaksi Suplier',
-            'suplier' => $data_suplier,
-            'product' => $data_product
+            'suplier' => $this->sm->getDataAll('supliers')->result(),
          ];
 
          $this->template->load('template', 'master/Transaksi_suplier/add', $data);
       } else {
-         $product_name           = trim(htmlspecialchars($this->input->post('jenis_produk')));
-         $n_suplier   = trim(htmlspecialchars($this->input->post('n_suplier')));
-         $h_product        = trim(htmlspecialchars($this->input->post('h_product')));
-         $qty           = trim(htmlspecialchars($this->input->post('qty')));
-         $t_harga       = trim(htmlspecialchars($this->input->post('t_harga')));
-         $bayar         = trim(htmlspecialchars($this->input->post('bayar')));
-         $kembalian     = trim(htmlspecialchars($this->input->post('kembalian')));
+         $suplier_id  = trim(htmlspecialchars($this->input->post('suplier_id')));
+         $t_harga     = trim(htmlspecialchars($this->input->post('t_harga')));
 
-         $dataInsert = [
-            'id_transaksi'  => $this->generate_id_transaksi(),
-            'n_barang'  => $product_name,
-            'n_suplier'    => $n_suplier,
-            'harga'    => $h_product,
-            'qty'          => $qty,
-            'total'      => $t_harga,
-            'bayar'      => $bayar,
-            'kembalian'    => $kembalian,
-            'created_by'    => $this->userId
-         ];
+         $transaksi_id = $this->generate_id_transaksi();
 
-         $getProduct = $this->pm->getData('product', ['product_name' => $product_name])->row();
-         $dataUpdate = [
-            'stock' => $getProduct->stock + $qty
-         ];
+         // Process each product from the table
+         $product_data = $this->input->post('products');
+         // return print_r($product_data);
 
-         $this->sm->insert('tr_supliers', $dataInsert);
-         $this->pm->update('product', $dataUpdate, ['id' => $getProduct->id]);
+         // Loop through the products array and decode JSON
+         foreach ($product_data as $product_json) {
+            $product = json_decode($product_json, true);
+            $product_name = $product['product_name'];
+            $qty = $product['qty'];
+            $harga = $product['harga'];
+            $total = $product['total'];
 
-         $this->session->set_flashdata('msg', 'Berhasil menambahkan Transaksi Suplier!');
-         redirect('master/Transaksi_suplier');
+            if ($qty > 0) {
+               $this->sm->insert('tr_product_supliers', [
+                  'transaksi_id' => $transaksi_id,
+                  'name_product' => $product_name,
+                  'qty'          => $qty,
+                  'harga'        => $harga,
+                  'total'        => $total
+               ]);
+
+               $getProduct = $this->pm->getData('product', ['product_name' => $product_name])->row();
+               if ($getProduct) {
+                  $this->pm->update('product', ['stock' => $getProduct->stock + $qty], ['id' => $getProduct->id]);
+               }
+            }
+         }
+
+         // Insert to `tr_new_supliers`
+         $this->sm->insert('tr_new_supliers', [
+            'id_transaksi' => $transaksi_id,
+            'suplier_id'   => $suplier_id,
+            'total'        => $t_harga
+         ]);
+
+         $this->session->set_flashdata('msg', 'Transaksi berhasil ditambahkan!');
+         redirect('master/transaksi_suplier');
       }
    }
 
@@ -196,7 +257,7 @@ class Transaksi_Suplier extends MY_Controller
    public function getProductDetail()
    {
       $product_name = trim(htmlspecialchars($this->input->post('product_name')));
-      $product = $this->sm->getData('product', ['product_name' => $product_name])->row();
+      $product = $this->sm->getData('product_supliers', ['product_name' => $product_name])->row();
 
       if ($product) {
          echo json_encode(['status' => 'success', 'data' => $product]);
@@ -217,6 +278,18 @@ class Transaksi_Suplier extends MY_Controller
       }
    }
 
+   public function getProductSupplierDetail()
+   {
+      $suplier_id = trim(htmlspecialchars($this->input->post('suplier_id')));
+      $result = $this->sm->getData('product_supliers', ['suplier_id' => $suplier_id])->result();
+
+      if ($result) {
+         echo json_encode(['status' => 'success', 'data' => $result]);
+      } else {
+         echo json_encode(['status' => 'error', 'message' => 'Produk tidak ditemukan untuk supplier ini']);
+      }
+   }
+
 
    private function duplicate_entry()
    {
@@ -234,7 +307,7 @@ class Transaksi_Suplier extends MY_Controller
 
    private function validationTransaksi_Suplier()
    {
-      $this->form_validation->set_rules('n_suplier', 'Nama Suplier', 'trim|required', [
+      $this->form_validation->set_rules('suplier_id', 'Nama Suplier', 'trim|required', [
          'required' => 'Nama Suplier wajib diisi!'
       ]);
    }

@@ -34,46 +34,30 @@
 
             <div class="form-group">
                <label for="">Nama Supplier : <code>*</code></label>
-               <select name="n_suplier" id="n_suplier" class="form-control" required>
+               <select name="suplier_id" id="suplier_id" class="form-control" required>
                   <option value="">-- Pilih --</option>
-                  <?php
-                  foreach ($suplier as $key => $value) { ?>
-                     <option value="<?= $value->name ?>"><?= $value->name . " - " . $value->name_company ?></option>
+                  <?php foreach ($suplier as $key => $value) { ?>
+                     <option value="<?= $value->id ?>"><?= $value->name . " - " . $value->name_company ?></option>
                   <?php } ?>
                </select>
             </div>
 
-            <!-- <div class="form-group">
+            <div class="form-group">
                <label for="">Nama Produk : <code>*</code></label>
-               <select name="product_name" id="product_name" class="form-control" required>
-                  <option value="">-- Pilih --</option>
-                  <?php
-                  foreach ($product as $key => $value) { ?>
-                     <option value="<?= $value->product_name ?>"><?= $value->product_name ?></option>
-                  <?php } ?>
-               </select>
-            </div> -->
-
-            <div class="form-group">
-               <label for="">Jenis Produk : <code>*</code></label>
-               <input type="text" name="jenis_produk" id="jenis_produk" class="form-control" value="<?= set_value('jenis_produk') ?>" autocomplete="off" readonly>
-            </div>
-
-            <!-- <div class="form-group">
-               <label for="">Harga Produk : <code>*</code></label>
-               <input type="text" name="harga_produk" id="harga_produk" class="form-control" value="<?= set_value('harga_produk') ?>" autocomplete="off" readonly>
-            </div> -->
-
-            <div class="form-group">
-               <label for="">Harga Produk : <code>*</code></label>
-               <input type="number" name="h_product" id="h_product" class="form-control" value="<?= set_value('h_product') ?>" autocomplete="off" readonly>
-               <?= form_error('h_product', '<small class="text-danger">', '</small>') ?>
-            </div>
-
-            <div class="form-group">
-               <label for="">QTY : <code>*</code></label>
-               <input type="number" name="qty" id="qty" class="form-control" value="<?= set_value('qty') ?>" autocomplete="off">
-               <?= form_error('qty', '<small class="text-danger">', '</small>') ?>
+               <table class="table table-bordered" id="product_table">
+                  <thead>
+                     <tr>
+                        <th>Nama Produk</th>
+                        <th>Satuan</th>
+                        <th>QTY</th>
+                        <th>Harga</th>
+                        <th>Total</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <!-- Product rows will be inserted here -->
+                  </tbody>
+               </table>
             </div>
 
             <div class="form-group">
@@ -94,13 +78,11 @@
                <?= form_error('kembalian', '<small class="text-danger">', '</small>') ?>
             </div>
 
-            <!-- <input type="hidden" name="id_transaksi" id="id_transaksi"> -->
             <input type="hidden" name="created_at" value="<?= date('Y-m-d H:i:s') ?>">
             <button type="submit" name="simpan" id="simpan" class="btn btn-primary">Bayar</button>
             <a href="<?= site_url('master/transaksi_suplier') ?>" class="btn btn-danger"><i class="fa fa-arrow-left"></i> Kembali</a>
 
             <?= form_close() ?>
-
          </div>
       </div>
    </div>
@@ -109,114 +91,123 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    $(document).ready(function() {
+      // Function to update total when QTY changes
+      $(document).on('input', '.qty-input', function() {
+         var qty = $(this).val(); // Get the quantity input
+         var harga = $(this).data('harga'); // Get the price from data-harga
 
-      $('#n_suplier').change(function() {
-         var n_suplier = $(this).val();
-         if (n_suplier != '') {
+         // Calculate total for this product
+         var total = qty * harga;
+
+         // Update the total price for this row
+         $(this).closest('tr').find('.total-price').text(total);
+
+         updateTotal(); // Update overall total price
+      });
+
+      // Before form submission, collect all product data and append it to the form
+      $('form').on('submit', function(e) {
+         updateProductData(); // Ensure product data is updated before submission
+      });
+
+      // Function to collect product data from table and insert into hidden inputs
+      function updateProductData() {
+         // First remove any existing hidden inputs for products
+         $('input[name="products[]"]').remove();
+
+         // Loop through each product row in the table
+         $('#product_table tbody tr').each(function() {
+            var productName = $(this).find('td:eq(0)').text();
+            var satuan = $(this).find('td:eq(1)').text();
+            var qty = $(this).find('.qty-input').val();
+            var harga = $(this).find('td:eq(3)').text();
+            var total = $(this).find('.total-price').text();
+
+            // Create hidden inputs for each product and append to the form
+            $('form').append('<input type="hidden" name="products[]" value=\'' + JSON.stringify({
+               product_name: productName,
+               satuan: satuan,
+               qty: qty,
+               harga: harga,
+               total: total
+            }) + '\'>');
+         });
+      }
+
+      // Update when supplier is selected
+      $('#suplier_id').change(function() {
+         var suplier_id = $(this).val();
+         if (suplier_id != '') {
             $.ajax({
-               url: "<?= site_url('master/transaksi_suplier/getSupplierDetail') ?>",
+               url: "<?= site_url('master/transaksi_suplier/getProductSupplierDetail') ?>",
                method: "POST",
                data: {
-                  n_suplier: n_suplier
+                  suplier_id: suplier_id
                },
                dataType: "json",
                success: function(data) {
                   if (data.status == 'success') {
-                     // console.log("sssssssss", data)
-                     $('#jenis_produk').val(data.data.jenis_supplier);
-                     $('#h_product').val(data.data.harga_supplier);
-                     // calculateTotal();
+                     var productTable = $('#product_table tbody');
+                     productTable.empty(); // Clear previous table rows
+
+                     $.each(data.data, function(key, value) {
+                        var row = '<tr>' +
+                           '<td>' + value.product_name + '</td>' +
+                           '<td>' + value.satuan + '</td>' +
+                           '<td><input type="number" class="form-control qty-input" data-harga="' + value.harga + '" value="0" min="0"></td>' +
+                           '<td>' + value.harga + '</td>' +
+                           '<td class="total-price">0</td>' + // Set initial total to 0
+                           '</tr>';
+                        productTable.append(row); // Append the row to the table
+                     });
+
+                     updateTotal(); // Update total when the table is populated
                   } else {
-                     // $('#harga_produk').val('');
+                     $('#product_table tbody').empty(); // Clear the table if no products are found
                   }
                },
                error: function(jqXHR, textStatus, errorThrown) {
-                  console.log("error jqXHR : ", jqXHR)
-                  console.log("error textStatus : ", textStatus)
-                  console.log("error errorThrown : ", errorThrown)
+                  console.log("error jqXHR : ", jqXHR);
+                  console.log("error textStatus : ", textStatus);
+                  console.log("error errorThrown : ", errorThrown);
                }
             });
          } else {
-            $('#h_product').val('');
+            $('#product_table tbody').empty(); // Reset the table if no supplier is selected
          }
       });
 
-      $('#product_name').change(function() {
-         var product_name = $(this).val();
-         if (product_name != '') {
-            $.ajax({
-               url: "<?= site_url('master/transaksi_suplier/getProductDetail') ?>",
-               method: "POST",
-               data: {
-                  product_name: product_name
-               },
-               dataType: "json",
-               success: function(data) {
-                  if (data.status == 'success') {
-                     $('#harga_produk').val(data.data.price);
-                     calculateTotal();
-                  } else {
-                     $('#harga_produk').val('');
-                  }
-               },
-               error: function(jqXHR, textStatus, errorThrown) {
-                  console.log("error jqXHR : ", jqXHR)
-                  console.log("error textStatus : ", textStatus)
-                  console.log("error errorThrown : ", errorThrown)
-               }
-            });
-         } else {
-            $('#h_product').val('');
-         }
-      });
+      // Function to update the overall total price
+      function updateTotal() {
+         var totalHarga = 0;
 
+         // Loop through each row and add up the total prices
+         $('#product_table tbody tr').each(function() {
+            var total = parseFloat($(this).find('.total-price').text()) || 0; // Ensure total is 0 if NaN
+            totalHarga += total;
+         });
 
+         // Update the total price input
+         $('#t_harga').val(totalHarga);
+         calculateKembalian(); // Recalculate change whenever total is updated
+      }
 
-      $('#qty').on('input', function() {
-         calculateTotal();
-      });
-      $('#h_product').on('input', function() {
-         calculateTotal();
-      });
-
+      // Calculate change based on total price and payment amount
       $('#bayar').on('input', function() {
          calculateKembalian();
       });
 
-      function calculateTotal() {
-         var h_product = parseFloat($('#h_product').val());
-         var qty = parseFloat($('#qty').val());
-         if (!isNaN(h_product) && !isNaN(qty)) {
-            var total = h_product * qty;
-            $('#t_harga').val(total);
-         } else {
-            $('#t_harga').val('');
-         }
-         disableButton();
-      }
-
       function calculateKembalian() {
-         var bayar = parseFloat($('#bayar').val());
-         var total = parseFloat($('#t_harga').val());
-         if (!isNaN(bayar) && !isNaN(total)) {
-            var kembalian = bayar - total;
+         var totalHarga = parseFloat($('#t_harga').val()) || 0; // Ensure totalHarga is 0 if NaN
+         var bayar = parseFloat($('#bayar').val()) || 0; // Ensure bayar is 0 if NaN
+         var kembalian = bayar - totalHarga;
+
+         // Update the change input
+         if (!isNaN(kembalian) && kembalian >= 0) {
             $('#kembalian').val(kembalian);
          } else {
-            $('#kembalian').val('');
-         }
-         disableButton();
-      }
-
-      function disableButton() {
-         var kembalian = parseFloat($('#kembalian').val());
-         var bayar = $('#bayar').val();
-         if (kembalian < 0 || !bayar) {
-            $('#simpan').attr('disabled', true);
-         } else {
-            $('#simpan').attr('disabled', false);
+            $('#kembalian').val(0); // Reset if payment is less than total
          }
       }
-
-      disableButton();
    });
 </script>
