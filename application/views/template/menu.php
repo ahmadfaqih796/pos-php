@@ -25,6 +25,7 @@ $role = $this->session->userdata('role');
 					<li><a href="<?php echo site_url(); ?>master/user">User</a></li>
 					<li><a href="<?php echo site_url(); ?>master/suplier">Suplier</a></li>
 					<li><a href="<?php echo site_url(); ?>master/produk">Produk</a></li>
+					<li><a href="<?php echo site_url(); ?>master/produk_supplier">Produk Supplier</a></li>
 					<li><a href="<?php echo site_url(); ?>master/transaksi_suplier">Transaksi Supplier</a></li>
 				<?php } else { ?>
 					<li><a href="<?php echo site_url(); ?>master/produk">Produk</a></li>
