@@ -156,8 +156,9 @@ class Transaksi_Suplier extends MY_Controller
                   'total'        => $total
                ]);
 
-               $getProduct = $this->pm->getData('product', ['product_name' => $product_name])->row();
+               $getProduct = $this->pm->getData('product', ['product_name' => $product_name, 'is_deleted' => 0])->row();
                if ($getProduct) {
+                  // return var_dump($getProduct);
                   $this->pm->update('product', ['stock' => $getProduct->stock + $qty], ['id' => $getProduct->id]);
                }
             }
