@@ -30,9 +30,14 @@ class Produk_Supplier_model extends CI_Model
       $this->db->trans_complete();
    }
 
-   public function getData($table, $where)
+   public function getData($id)
    {
-      return $this->db->select('*')->from($table)->where($where)->get();
+      // return $this->db->select('*')->from($table)->where($where)->get();
+      $this->db->select('ps.*, s.name AS nama_supplier, product_name');
+      $this->db->from('product_supliers ps');
+      $this->db->join('supliers s', 'ps.suplier_id = s.id', 'left');
+      $this->db->where('ps.id', $id);
+      return $this->db->get();
    }
 
    public function getDataAll($table)
@@ -44,15 +49,14 @@ class Produk_Supplier_model extends CI_Model
 
    public function queryProdukSupplierDtTb()
    {
-      $column_order = array(null, 'nama_supplier', 'product_name', 'price');
-      $column_search = array('nama_supplier', 'product_name', 'price');
+      $column_order = array(null, 'nama_supplier', 'product_name');
+      $column_search = array('nama_supplier', 'product_name');
       $order = array('id' => 'DESC');
 
       // $this->db->select('*')->from('product_supliers')->where('is_deleted', 0);
-      $this->db->select('ps.*, s.name AS nama_supplier, p.product_name, p.price');
+      $this->db->select('ps.*, s.name AS nama_supplier');
       $this->db->from('product_supliers ps');
       $this->db->join('supliers s', 'ps.suplier_id = s.id', 'left');
-      $this->db->join('product p', 'ps.product_id = p.id', 'left');
       $this->db->where('ps.is_deleted', 0);
       // $query = $this->db->get();
       $i = 0;

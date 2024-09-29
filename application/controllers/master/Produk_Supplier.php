@@ -51,9 +51,9 @@ class Produk_Supplier extends MY_Controller
                'created_by'        => $this->userId
             ];
 
-            $this->ps->insert('product', $dataInsert);
+            $this->ps->insert('product_supliers', $dataInsert);
 
-            $this->session->set_flashdata('msg', 'Berhasil menambahkan produk!');
+            $this->session->set_flashdata('msg', 'Berhasil menambahkan produk supplier!');
             redirect('master/produk_supplier');
          } else {
             $this->session->set_flashdata('msg', 'Nama produk sudah terdaftar di sistem! Tidak boleh sama!');
@@ -69,29 +69,35 @@ class Produk_Supplier extends MY_Controller
       }
       $this->validationProduk();
       if ($this->form_validation->run() == FALSE) {
+
+         $data_suplier = $this->ps->getDataAll('supliers')->result();
+         $data_product = $this->ps->getDataAll('product')->result();
+
          $data = [
             'title'        => 'Menu Edit Produk Supplier',
-            'id'           => $id,
-            'rowProduct'   => $this->ps->getData('product', ['id' => $id])->row()
+            'id_table'           => $id,
+            'rowProdukSupplier'   => $this->ps->getData($id)->row(),
+            'suplier' => $data_suplier,
+            'product' => $data_product
          ];
 
          $this->template->load('template', 'master/produk_supplier/edit', $data);
       } else {
          if ($this->duplicate_entry() == 0) {
-            $namaProduk     = trim(htmlspecialchars($this->input->post('product_name')));
-            $hargaProduk    = trim(htmlspecialchars($this->input->post('price')));
-            $stokProduk     = trim(htmlspecialchars($this->input->post('stock')));
+            $suplier_id     = trim(htmlspecialchars($this->input->post('suplier_id')));
+            $product_name     = trim(htmlspecialchars($this->input->post('product_name')));
+            $hargaProduk    = trim(htmlspecialchars($this->input->post('harga')));
+            $satuanProduk     = trim(htmlspecialchars($this->input->post('satuan')));
 
 
             $dataUpdate = [
-               'product_name'      => $namaProduk,
-               'price'             => $hargaProduk,
-               'stock'             => $stokProduk,
-               'updated_by'        => $this->userId,
-               'updated_at'        => $this->dateNow
+               'product_name'      => $product_name,
+               'suplier_id'      => $suplier_id,
+               'harga'           => $hargaProduk,
+               'satuan'          => $satuanProduk,
             ];
 
-            $this->ps->update('product', $dataUpdate, ['id' => $id]);
+            $this->ps->update('product_supliers', $dataUpdate, ['id' => $id]);
 
             $this->session->set_flashdata('msg', 'Berhasil update produk!');
             redirect('master/produk_supplier');
@@ -135,7 +141,7 @@ class Produk_Supplier extends MY_Controller
          $row[] = $field->nama_supplier;
          $row[] = $field->product_name;
          $row[] = $field->satuan;
-         $row[] = "Rp. " . number_format($field->price, 0, '.', '.');
+         $row[] = "Rp. " . number_format($field->harga, 0, '.', '.');
          $row[] = "<a href='" . site_url('master/produk_supplier/hapusProduk/' . $field->id) . "' onclick='return confirm(`Yakin ingin hapus produk?`)' class='btn btn-danger btn-icon'><i class='fa fa-trash'></i></a> <a href='" . site_url('master/produk_supplier/editProduk/' . $field->id) . "' class='btn btn-warning btn-icon'><i class='fa fa-pen'></i></a>";
 
          $data[] = $row;
@@ -169,15 +175,15 @@ class Produk_Supplier extends MY_Controller
    private function validationProduk()
    {
 
-      $this->form_validation->set_rules('product_name', 'Nama Produk Supplier', 'trim|required', [
-         'required' => 'Nama Produk Supplier wajib diisi!'
+      $this->form_validation->set_rules('suplier_id', 'Nama Supplier', 'trim|required', [
+         'required' => 'Nama Supplier wajib diisi!'
       ]);
-      $this->form_validation->set_rules('price', 'Harga', 'trim|required|numeric', [
+      $this->form_validation->set_rules('product_name', 'Nama Produk', 'trim|required', [
+         'required' => 'Nama Produk wajib diisi!'
+      ]);
+      $this->form_validation->set_rules('harga', 'Harga', 'trim|required|numeric', [
          'required' => 'Harga wajib diisi!',
          'numeric'  => 'Inputan wajib angka'
-      ]);
-      $this->form_validation->set_rules('stock', 'Stok', 'trim|required|numeric', [
-         'required' => 'Stok wajib diisi!'
       ]);
    }
 
