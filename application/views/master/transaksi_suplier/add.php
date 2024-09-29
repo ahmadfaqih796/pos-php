@@ -43,7 +43,7 @@
             </div>
 
             <div class="form-group">
-               <label for="">Nama Produk : <code>*</code></label>
+               <!-- <label for="">Nama Produk : <code>*</code></label> -->
                <table class="table table-bordered" id="product_table">
                   <thead>
                      <tr>

@@ -47,8 +47,8 @@
                            <td><?= $value->name_product ?></td>
                            <td><?= $value->qty ?></td>
                            <td><?= $value->satuan ?></td>
-                           <td><?= $value->harga ?></td>
-                           <td><?= $value->total ?></td>
+                           <td>Rp. <?= number_format($value->harga) ?></td>
+                           <td>Rp. <?= number_format($value->total) ?></td>
                         </tr>
                      <?php
                         $no++;
@@ -59,15 +59,15 @@
                   <tfoot>
                      <tr>
                         <th colspan="5">Sub Total</th>
-                        <th><?= $total ?></th>
+                        <th>Rp. <?= number_format($total) ?></th>
                      </tr>
                      <tr>
                         <th colspan="5">Bayar</th>
-                        <th><?= $transaksi->bayar ?></th>
+                        <th>Rp. <?= number_format($transaksi->bayar) ?></th>
                      </tr>
                      <tr>
                         <th colspan="5">Kembalian</th>
-                        <th><?= $transaksi->kembalian ?></th>
+                        <th>Rp. <?= number_format($transaksi->kembalian) ?></th>
                      </tr>
                   </tfoot>
                </table>
