@@ -27,6 +27,19 @@ class Transaksi_Suplier extends MY_Controller
       $this->template->load('template', 'master/transaksi_suplier/index', $data);
    }
 
+   public function viewTransaksi_Suplier($transaksi_id = null)
+   {
+      $product_supliers = $this->sm->getData('tr_product_supliers', ['transaksi_id' => $transaksi_id])->result();
+      if ($this->auth() == false) {
+         redirect('');
+      }
+      $data = [
+         'title' => 'Master View Transaksi Suplier',
+         'product' => $product_supliers
+      ];
+      $this->template->load('template', 'master/transaksi_suplier/view', $data);
+   }
+
    function cetakTransaksi($id)
    {
       if ($this->auth() == false) {
@@ -115,14 +128,17 @@ class Transaksi_Suplier extends MY_Controller
          foreach ($product_data as $product_json) {
             $product = json_decode($product_json, true);
             $product_name = $product['product_name'];
+            $satuan = $product['satuan'];
             $qty = $product['qty'];
             $harga = $product['harga'];
             $total = $product['total'];
+            // return var_dump($product_data);
 
             if ($qty > 0) {
                $this->sm->insert('tr_product_supliers', [
                   'transaksi_id' => $transaksi_id,
                   'name_product' => $product_name,
+                  'satuan'       => $satuan,
                   'qty'          => $qty,
                   'harga'        => $harga,
                   'total'        => $total
