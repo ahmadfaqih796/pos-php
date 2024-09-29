@@ -29,11 +29,9 @@
                   <thead>
                      <tr>
                         <th>No.</th>
-                        <th>Supplier</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Nama Supplier</th>
                         <th>Id Transaksi</th>
-                        <th>Nama Barang</th>
-                        <th>Harga Beli</th>
-                        <th>QTY</th>
                         <th>Total</th>
                         <th>&nbsp;</th>
                      </tr>

@@ -235,13 +235,11 @@ class Transaksi_Suplier extends MY_Controller
          $no++;
          $row = array();
          $row[] = $no;
-         $row[] = $field->n_suplier;
+         $row[] = $field->created_at;
+         $row[] = $field->nama_supplier;
          $row[] = $field->id_transaksi;
-         $row[] = $field->n_barang;
-         $row[] = $field->harga;
-         $row[] = $field->qty;
          $row[] = $field->total;
-         $row[] = "<a href='" . site_url('master/transaksi_suplier/hapusTransaksi_suplier/' . $field->id) . "' onclick='return confirm(`Yakin ingin hapus Transaksi_suplier?`)' class='btn btn-danger btn-icon'><i class='fa fa-trash'></i></a> <a href='" . site_url('master/transaksi_suplier/cetakTransaksi/' . $field->id) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
+         $row[] = "<a href='" . site_url('master/transaksi_suplier/viewTransaksi_Suplier/' . $field->id_transaksi) . "' class='btn btn-primary btn-icon'><i class='fa fa-eye'></i></a> <a href='" . site_url('master/transaksi_suplier/cetakTransaksi/' . $field->id) . "' class='btn btn-success btn-icon'><i class='fa fa-print'></i></a>";
 
          $data[] = $row;
       }

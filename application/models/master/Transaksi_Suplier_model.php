@@ -44,11 +44,15 @@ class Transaksi_Suplier_model extends CI_Model
 
    public function querySuplierDtTb()
    {
-      $column_order = array(null, 'id_transaksi', 'n_suplier', 'n_barang', 'harga', 'qty', 'total');
-      $column_search = array('id_transaksi', 'n_suplier', 'n_barang', 'harga', 'qty', 'total');
+      $column_order = array(null, 'id_transaksi', 'nama_supplier');
+      $column_search = array('id_transaksi', 'nama_supplier');
       $order = array('id' => 'DESC');
 
-      $this->db->select('*')->from('tr_supliers')->where('is_deleted', 0);
+      // $this->db->select('*')->from('tr_new_supliers');
+
+      $this->db->select('ts.*, s.name AS nama_supplier');
+      $this->db->from('tr_new_supliers ts');
+      $this->db->join('supliers s', 'ts.suplier_id = s.id', 'left');
 
       $i = 0;
 
