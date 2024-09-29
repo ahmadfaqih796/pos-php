@@ -4,7 +4,7 @@
 </ol>
 
 <h1 class="page-header">
-    <a href="<?php echo base_url() ?>master/produk/tambahProduk" class="btn btn-primary">Tambah Produk Supplier</a>
+    <a href="<?php echo base_url() ?>master/produk_supplier/tambahProduk" class="btn btn-primary">Tambah Produk Supplier</a>
 </h1>
 
 <?php if ($this->session->flashdata('msg')) { ?>

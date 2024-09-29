@@ -33,22 +33,28 @@ class Produk_Supplier extends MY_Controller
       }
       $this->validationProduk();
       if ($this->form_validation->run() == FALSE) {
+         $data_suplier = $this->ps->getDataAll('supliers')->result();
+         $data_product = $this->ps->getDataAll('product')->result();
+
          $data = [
-            'title' => 'Menu Tambah Produk Supplier'
+            'title' => 'Menu Tambah Produk Supplier',
+            'suplier' => $data_suplier,
+            'product' => $data_product
          ];
 
          $this->template->load('template', 'master/produk_supplier/add', $data);
       } else {
          if ($this->duplicate_entry() == 0) {
-            $namaProduk     = trim(htmlspecialchars($this->input->post('product_name')));
-            $hargaProduk    = trim(htmlspecialchars($this->input->post('price')));
-            $stokProduk     = trim(htmlspecialchars($this->input->post('stock')));
+            $suplier_id     = trim(htmlspecialchars($this->input->post('suplier_id')));
+            $product_name     = trim(htmlspecialchars($this->input->post('product_name')));
+            $hargaProduk    = trim(htmlspecialchars($this->input->post('harga')));
+            $satuanProduk     = trim(htmlspecialchars($this->input->post('satuan')));
 
             $dataInsert = [
-               'product_name'      => $namaProduk,
-               'price'             => $hargaProduk,
-               'stock'             => $stokProduk,
-               'created_by'        => $this->userId
+               'product_name'      => $product_name,
+               'suplier_id'      => $suplier_id,
+               'harga'           => $hargaProduk,
+               'satuan'          => $satuanProduk,
             ];
 
             $this->ps->insert('product_supliers', $dataInsert);
@@ -115,12 +121,10 @@ class Produk_Supplier extends MY_Controller
       }
       $dataUpdate = [
          'is_deleted'    => 1,
-         'deleted_by'    => $this->userId,
-         'deleted_at'    => $this->dateNow
       ];
 
-      $this->ps->update('product', $dataUpdate, ['id' => $id]);
-      $this->session->set_flashdata('msg', 'Berhasil menghapus produk!');
+      $this->ps->update('product_supliers', $dataUpdate, ['id' => $id]);
+      $this->session->set_flashdata('msg', 'Berhasil menghapus produk supplier!');
       redirect('master/produk_supplier');
    }
 
@@ -142,7 +146,7 @@ class Produk_Supplier extends MY_Controller
          $row[] = $field->product_name;
          $row[] = $field->satuan;
          $row[] = "Rp. " . number_format($field->harga, 0, '.', '.');
-         $row[] = "<a href='" . site_url('master/produk_supplier/hapusProduk/' . $field->id) . "' onclick='return confirm(`Yakin ingin hapus produk?`)' class='btn btn-danger btn-icon'><i class='fa fa-trash'></i></a> <a href='" . site_url('master/produk_supplier/editProduk/' . $field->id) . "' class='btn btn-warning btn-icon'><i class='fa fa-pen'></i></a>";
+         $row[] = "<a href='" . site_url('master/produk_supplier/hapusProduk/' . $field->id) . "' onclick='return confirm(`Yakin ingin hapus produk supplier?`)' class='btn btn-danger btn-icon'><i class='fa fa-trash'></i></a> <a href='" . site_url('master/produk_supplier/editProduk/' . $field->id) . "' class='btn btn-warning btn-icon'><i class='fa fa-pen'></i></a>";
 
          $data[] = $row;
       }
