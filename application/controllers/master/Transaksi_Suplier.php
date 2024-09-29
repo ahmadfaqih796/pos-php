@@ -47,7 +47,15 @@ class Transaksi_Suplier extends MY_Controller
       if ($this->auth() == false) {
          redirect('');
       }
-      $data['q1'] = $this->db->get_where('tr_supliers', ['id' => $id_transaksi])->row();
+      $product_supliers = $this->sm->getData('tr_product_supliers', ['transaksi_id' => $id_transaksi])->result();
+      $transaksi_supliers = $this->sm->getData('tr_new_supliers', ['id_transaksi' => $id_transaksi])->row();
+      $suppliers = $this->sm->getData('supliers', ['id' => $transaksi_supliers->suplier_id])->row();
+      $data = [
+         'title' => 'Master Cetak Transaksi Suplier',
+         'q1' => $transaksi_supliers,
+         'q2' => $product_supliers,
+         'supplier' => $suppliers
+      ];
       $this->load->view('master/transaksi_suplier/cetak', $data);
    }
 
