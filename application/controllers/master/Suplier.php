@@ -152,8 +152,8 @@ class Suplier extends MY_Controller
             $row[] = $no;
             $row[] = $field->name_company;
             $row[] = $field->name;
-            $row[] = $field->jenis_supplier;
-            $row[] = $field->harga_supplier;
+            // $row[] = $field->jenis_supplier;
+            // $row[] = $field->harga_supplier;
             $row[] = $field->phone_number;
             $row[] = $field->address;
             // $row[] = $field->city;

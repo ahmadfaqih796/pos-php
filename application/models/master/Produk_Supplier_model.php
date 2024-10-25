@@ -54,7 +54,7 @@ class Produk_Supplier_model extends CI_Model
       $order = array('id' => 'DESC');
 
       // $this->db->select('*')->from('product_supliers')->where('is_deleted', 0);
-      $this->db->select('ps.*, s.name AS nama_supplier');
+      $this->db->select('ps.*, s.name AS nama_supplier, s.name_company, s.phone_number, address');
       $this->db->from('product_supliers ps');
       $this->db->join('supliers s', 'ps.suplier_id = s.id', 'left');
       $this->db->where('ps.is_deleted', 0);
